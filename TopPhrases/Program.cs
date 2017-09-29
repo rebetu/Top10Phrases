@@ -29,7 +29,6 @@ namespace TopPhrases
 
             foreach (var sentence in sentences)
             {
-                List<List<string>> phrasesInSentence = new List<List<string>>();
                 string cleanedString = System.Text.RegularExpressions.Regex.Replace(sentence, @"\s+", " ");
                 string[] words = cleanedString.Split(wordDelimiter);
 
@@ -65,7 +64,7 @@ namespace TopPhrases
             //Non-foolproof way to make it run slightly faster by only sending the top 70 phrases to the RemoveSubsets function
             var top70Phrases = Phrases.OrderByDescending(x => x.Value).Take(70).ToDictionary(pair => pair.Key, pair => pair.Value); 
 
-            return RemoveSubsets(top70Phrases).OrderByDescending(x => x.Value).Take(10).ToDictionary(pair => pair.Key, pair => pair.Value); 
+            return RemoveSubsets(top70Phrases).Take(10).ToDictionary(pair => pair.Key, pair => pair.Value); 
         }
 
         public static void CheckDictionary(string phrase, Dictionary<string, int> Phrases)
@@ -83,9 +82,10 @@ namespace TopPhrases
                 Phrases.Add(phrase, 1);
             }
         }
-        
+
         //Loops through each phrase then first checks if there are any other phrases that contain the current phrase (any supersets of it) 
-        //and if there are, it then checks if the count values of it are equal. If equal counts, remove the subset one from the returned list. This could be optimized to be made more efficient.
+        //and if there are, it then checks if the count values of it are equal. If equal counts, remove the subset one from the returned list. 
+        //This could be optimized to be made more efficient.
         public static Dictionary<string, int> RemoveSubsets(Dictionary<string, int> Phrases)
         {
             foreach (var phrase in Phrases.ToList())
